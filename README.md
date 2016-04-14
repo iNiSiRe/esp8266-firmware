@@ -5,7 +5,7 @@ Using WebSockets transport.
 
 # Description
 
-- Draft WebSocket client implementation;
+- Draft WebSocket client implementation (based on Sming\TcpClient);
 
 Other will be added later...
 
