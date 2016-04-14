@@ -4,7 +4,10 @@ The firmware based on Sming Framework and designed for easy to use ESP in IoT, s
 Using WebSockets transport.
 
 # Description
-Will be added later...
+
+- Draft WebSocket client implementation;
+
+Other will be added later...
 
 # Using
 Will be added later...
