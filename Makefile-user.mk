@@ -6,8 +6,8 @@
 MODULES = app src/Kernel src/WebSocketClient
 EXTRA_INCDIR = src
 
-#ESP_HOME = /esp/esp-tool-sdk
-#SMING_HOME = /esp/Sming/Sming
+ESP_HOME = /opt/esp-open-sdk
+SMING_HOME = /opt/Sming/Sming
 
 ## COM port parameter is reqruied to flash firmware correctly.
 ## Windows: 

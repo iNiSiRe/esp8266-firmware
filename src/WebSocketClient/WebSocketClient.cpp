@@ -7,7 +7,7 @@ void WebSocketClient::handshake()
     char b64Key[25];
     String key = "------------------------";
 
-    randomSeed(analogRead(0));
+    randomSeed(0);
 
     for (int i=0; i<16; ++i) {
         keyStart[i] = (char)random(1, 256);
@@ -87,7 +87,9 @@ void WebSocketClient::onEvent(TcpClient &client, TcpConnectionEvent sourceEvent)
             break;
 
         case eTCE_Sent:
+            debugf("Sent");
         case eTCE_Poll:
+            debugf("Poll");
             break;
 
         case eTCE_Received:

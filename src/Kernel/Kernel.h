@@ -4,22 +4,25 @@
 #include <SmingCore/SmingCore.h>
 #include "Unit.h"
 #include "LightUnit.h"
+#include "Configuration.h"
 #include <WebSocketClient/WebSocketClient.h>
 #include <WString.h>
 
 enum KernelAction {
     ACTION_REGISTER = 1,
-    ACTION_CONTROL
+    ACTION_CONTROL,
+    ACTION_UPDATE
 };
 
 class Kernel {
 
 public:
-    Kernel();
-    void connect(String ssid, String password, bool save);
+    Kernel(Configuration * configuration);
+    void connect(bool save);
     void addUnit(Unit *unit);
 
 private:
+    Configuration * configuration;
     Vector <Unit *> units;
     WebSocketClient * client;
 
@@ -28,6 +31,8 @@ private:
 
     void onSocketConnectSuccess();
     void onSocketData(String message);
+
+    void onSocketStatusCheck();
 };
 
 #endif //SMARTHOME_KERNEL_H

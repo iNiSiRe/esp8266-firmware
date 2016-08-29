@@ -1,10 +1,11 @@
 #include "LightUnit.h"
 
-void LightUnit::dim(uint8_t value) {
+void LightUnit::dim(uint32 value) {
+    debugf("LightUnit::handle => Dim light '%s' to '%d' ", name.c_str(), value);
     driver->analogWrite(pin, value);
 }
 
-LightUnit::LightUnit(String name, DriverPWM *driver, uint8_t pin) : Unit(name, "light", "control", pin)
+LightUnit::LightUnit(String name, HardwarePWM *driver, uint8_t pin) : Unit(name, "light", "control", pin)
 {
     pinMode(pin, OUTPUT);
     this->driver = driver;
@@ -17,9 +18,7 @@ void LightUnit::handle(JsonObject &root)
         return;
     }
 
-    int value = (int) root["value"];
+    float value = (float) root["value"];
 
-    debugf("LightUnit::handle => Dim light '%s' to '%d' %%", name.c_str(), value);
-
-    dim((uint8_t) round(value / 100 * 1024));
+    dim((uint32) round(value * 22222.0));
 }

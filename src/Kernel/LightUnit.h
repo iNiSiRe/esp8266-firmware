@@ -7,12 +7,12 @@
 class LightUnit : public Unit {
 
 protected:
-    DriverPWM * driver;
+    HardwarePWM * driver;
 
 public:
-    LightUnit(String name, DriverPWM *driver, uint8_t pin);
+    LightUnit(String name, HardwarePWM *driver, uint8_t pin);
 
-    void dim(uint8_t value);
+    void dim(uint32 value);
     void handle(JsonObject & root);
 };
 

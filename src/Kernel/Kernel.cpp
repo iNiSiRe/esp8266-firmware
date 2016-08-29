@@ -1,8 +1,10 @@
 #include <WebSocketClient/WebSocketClient.h>
 #include "Kernel.h"
 
-Kernel::Kernel()
+Kernel::Kernel(Configuration * configuration)
 {
+    this->configuration = configuration;
+
     // Initialize WIFI
     WifiAccessPoint.enable(false);
     WifiStation.enable(true);
@@ -12,9 +14,9 @@ Kernel::Kernel()
     client->onData = WebSocketDataDelegate(&Kernel::onSocketData, this);
 }
 
-void Kernel::connect(String ssid, String password, bool save)
+void Kernel::connect(bool save)
 {
-    WifiStation.config(ssid, password);
+    WifiStation.config(configuration->ssid, configuration->password);
     WifiStation.waitConnection(ConnectionDelegate(&Kernel::onStationConnectSuccess, this), 20, ConnectionDelegate(&Kernel::onStationConnectFail, this));
 }
 
@@ -28,7 +30,10 @@ void Kernel::onStationConnectFail() {
 
 void Kernel::onStationConnectSuccess() {
     debugf("Connected, IP: %s \n", WifiStation.getIP().toString().c_str());
-    client->connect("192.168.1.109", 8000);
+    client->connect("ws.tumbler.one", 8000);
+
+    Timer * timer = new Timer();
+    timer->initializeMs(10000, TimerDelegate(&Kernel::onSocketStatusCheck, this)).start();
 }
 
 void Kernel::onSocketConnectSuccess()
@@ -38,8 +43,7 @@ void Kernel::onSocketConnectSuccess()
     DynamicJsonBuffer buffer;
     JsonObject & root = buffer.createObject();
     root["action"] = (int) ACTION_REGISTER;
-    root["room"] = "Room1";
-    root["module"] = "Module1";
+    root["uid"] = configuration->uid;
 
     JsonArray & units = buffer.createArray();
     for (int i = 0; i < this->units.size(); i++) {
@@ -87,8 +91,34 @@ void Kernel::onSocketData(String message)
             }
             break;
 
+        case ACTION_UPDATE:
+            HttpFirmwareUpdate * update = new HttpFirmwareUpdate();
+            update->addItem(0x0000, "http://smart-home.tumbler.one/flash.bin");
+            update->start();
+            break;
+
         default:
             debugf("Kernel::onSocketData ==> No action");
+            break;
+    }
+}
+
+void Kernel::onSocketStatusCheck() {
+    switch (client->getConnectionState()) {
+        case eTCS_Ready:
+            debugf("Socket ready");
+            break;
+        case eTCS_Connecting:
+            debugf("Socket connecting");
+            break;
+        case eTCS_Connected:
+            debugf("Socket connected");
+            break;
+        case eTCS_Successful:
+            debugf("Socket successful");
+            break;
+        case eTCS_Failed:
+            debugf("Socket failed");
             break;
     }
 }
