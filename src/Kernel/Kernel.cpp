@@ -30,7 +30,11 @@ void Kernel::onStationConnectFail() {
 
 void Kernel::onStationConnectSuccess() {
     debugf("Connected, IP: %s \n", WifiStation.getIP().toString().c_str());
-    client->connect("ws.tumbler.one", 8000);
+
+    client->connect(
+            this->configuration->webSocketServer,
+            this->configuration->webSocketPort
+    );
 
     Timer * timer = new Timer();
     timer->initializeMs(10000, TimerDelegate(&Kernel::onSocketStatusCheck, this)).start();
@@ -93,7 +97,12 @@ void Kernel::onSocketData(String message)
 
         case ACTION_UPDATE:
             HttpFirmwareUpdate * update = new HttpFirmwareUpdate();
-            update->addItem(0x0000, "http://smart-home.tumbler.one/flash.bin");
+            String a = this->configuration->updateUrl;
+            String b = this->configuration->updateUrl;
+            a.concat("/0x0000.bin");
+            b.concat("/0x9000.bin");
+            update->addItem(0x0000, a);
+            update->addItem(0x9000, b);
             update->start();
             break;
 

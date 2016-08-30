@@ -17,6 +17,9 @@ void init() {
         configuration->ssid = "Network";
         configuration->password = "1234567890";
         configuration->uid = random();
+        configuration->webSocketServer = "ws.tumbler.one";
+        configuration->webSocketPort = 8000;
+        configuration->updateUrl = "http://smart-home.tumbler.one";
     }
 
     Kernel * kernel = new Kernel(configuration);

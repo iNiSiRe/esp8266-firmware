@@ -14,7 +14,8 @@ private:
     const String FILE = "configuration.json";
 
 public:
-    String ssid, password;
+    String ssid, password, updateUrl, webSocketServer;
+    int webSocketPort;
     long uid;
 
     bool load();
