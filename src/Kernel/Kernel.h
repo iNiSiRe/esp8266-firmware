@@ -9,7 +9,8 @@
 
 enum KernelAction {
     ACTION_REGISTER = 1,
-    ACTION_CONTROL
+    ACTION_CONTROL = 2,
+    ACTION_LOGIN = 4
 };
 
 class Kernel {

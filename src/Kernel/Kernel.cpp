@@ -28,7 +28,7 @@ void Kernel::onStationConnectFail() {
 
 void Kernel::onStationConnectSuccess() {
     debugf("Connected, IP: %s \n", WifiStation.getIP().toString().c_str());
-    client->connect("192.168.1.109", 8000);
+    client->connect("192.168.31.135", 8000);
 }
 
 void Kernel::onSocketConnectSuccess()
@@ -37,19 +37,8 @@ void Kernel::onSocketConnectSuccess()
 
     DynamicJsonBuffer buffer;
     JsonObject & root = buffer.createObject();
-    root["action"] = (int) ACTION_REGISTER;
-    root["room"] = "Room1";
-    root["module"] = "Module1";
-
-    JsonArray & units = buffer.createArray();
-    for (int i = 0; i < this->units.size(); i++) {
-        JsonObject & unit = buffer.createObject();
-        unit["name"] = this->units[i]->name;
-        unit["class"] = this->units[i]->category;
-        unit["type"] = this->units[i]->type;
-        units.add(unit);
-    }
-    root["units"] = units;
+    root["action"] = (int) ACTION_LOGIN;
+    root["id"] = "1";
 
     String packet;
     root.printTo(packet);
@@ -79,12 +68,11 @@ void Kernel::onSocketData(String message)
     switch (action) {
         case ACTION_CONTROL:
             debugf("Kernel::onSocketData ==> Action control");
-            for (int i = 0; i < units.size(); i++) {
-                if (units.elementAt(i)->name == root["unit"]) {
-                    Unit *unit = const_cast <Unit *> (units.elementAt(i));
-                    unit->handle(root);
-                }
+
+            if (root["type"] == "digital") {
+                digitalWrite(root["pin"], root["value"]);
             }
+
             break;
 
         default:

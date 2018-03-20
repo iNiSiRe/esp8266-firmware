@@ -16,5 +16,4 @@ public:
     void handle(JsonObject & root);
 };
 
-
 #endif //SMARTHOME_LIGHTUNIT_H
